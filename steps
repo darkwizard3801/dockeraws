@@ -1,16 +1,15 @@
+step 1
+//instal docker
 sudo apt install docker.io
-//sudo apt install docker-composer
 
+step 2
+//create a directory and create a file named 'docker-compose.yml'
+sudo mkdir 'directory_name' && sudo cd 'directory_name'
+sudo nano docker-compose.yml
 
-docker stats
-docker top <container_id>
-docker inspect <container_id>
-
-//start docker-compose.yml
+//inside the yml file paste the following
 
 version: '3.8'
-
-
 
 services:
   web:
@@ -49,13 +48,13 @@ volumes:
 
 //End
 
-mkdir -p my-lamp-project/www
-cd my-lamp-project
+
+step 3
+
+// install the docker composer
 
 # Add Docker's official GPG key:
 sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
@@ -66,10 +65,31 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 
-
 sudo apt-get install docker-compose-plugin
+//test docker composer
 docker compose version
 
+
+
+
+step 4
+//run the yml file
+sudo docker composer up -d
+
+step 5
+
+//install mysqli
+//mysqli install on lamp_web
+sudo docker exec -it lamp_web bash
+docker-php-ext-install mysqli pdo pdo_mysql
+exit
+sudo docker restart lamp_web
+
+step 6
+
+//a www folder will appear on the project folder cd to it and create a index.php file inside it 
+sudo nano index.php
+//paste the following code
 <?php
 
 $servername = "172.18.0.2"; // Name of the MySQL service in docker-compose
@@ -90,19 +110,18 @@ if ($conn->connect_error) {
 $conn->close();
 ?>
 
-//for host address
+//for servername
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' lamp_db
 
-//mysqli install on lamp_web
-docker exec -it lamp_web bash
-docker-php-ext-install mysqli pdo pdo_mysql
+step 6
 
-docker restart lamp_web
+copy the public ip of instance and paste it into the web browser
 
-//connect.php in /www
+###After stoping the instance and starting the same instance later then
 
-sudo docker compose up -d
-sudo docker -p
-apachectl restart
-exit
-restart
+sudo docker restart lamp_db
+sudo docker restart lamp_phpmyadmin
+sudo docker restart lamp_web
+
+//then find the severname of the server again and paste it inside the index.php file 
+//copy the public ip of instance and paste it into the web browser
