@@ -1,0 +1,108 @@
+sudo apt install docker.io
+//sudo apt install docker-composer
+
+
+docker stats
+docker top <container_id>
+docker inspect <container_id>
+
+//start docker-compose.yml
+
+version: '3.8'
+
+
+
+services:
+  web:
+    image: php:7.4-apache
+    container_name: lamp_web
+    ports:
+      - "80:80"
+    volumes:
+      - ./www:/var/www/html  # Mount your application code
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0  # Consider using a more recent MySQL version
+    container_name: lamp_db
+    environment:
+      MYSQL_ROOT_PASSWORD: password  # Replace with a strong password
+      MYSQL_DATABASE: sample  # Replace with your desired database name
+      MYSQL_USER: user  # Replace with a database user name
+      MYSQL_PASSWORD: password  # Replace with a strong password for the user
+    volumes:
+      - db_data:/var/lib/mysql  # Persistent storage for MySQL data
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: lamp_phpmyadmin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password  # Use the same password set for MySQL root
+
+
+volumes:
+  db_data:
+
+//End
+
+mkdir -p my-lamp-project/www
+cd my-lamp-project
+
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+
+sudo apt-get install docker-compose-plugin
+docker compose version
+
+<?php
+
+$servername = "172.18.0.2"; // Name of the MySQL service in docker-compose
+$username = "root";
+$password = "password";
+$dbname = "sample";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " + $conn->connect_error);
+} else {
+  echo "Connected successfully";
+}
+
+$conn->close();
+?>
+
+//for host address
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' lamp_db
+
+//mysqli install on lamp_web
+docker exec -it lamp_web bash
+docker-php-ext-install mysqli pdo pdo_mysql
+
+docker restart lamp_server
+
+//connect.php in /www
+
+
+
+apachectl restart
+exit
+restart
