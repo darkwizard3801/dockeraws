@@ -97,7 +97,7 @@ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' lamp
 docker exec -it lamp_web bash
 docker-php-ext-install mysqli pdo pdo_mysql
 
-docker restart lamp_db
+docker restart lamp_web
 
 //connect.php in /www
 
