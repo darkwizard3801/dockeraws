@@ -101,7 +101,7 @@ docker restart lamp_server
 
 //connect.php in /www
 
-
+docker compose up -d
 
 apachectl restart
 exit
